@@ -261,6 +261,36 @@ namespace math_nerd
 
             return new_mat;
         }
+
+        // Scalar multiplication operator
+        /** \name Scalar multiplication operators */
+        /** \fn constexpr matrix_t<T, R, C> operator*(T const &lhs, matrix_t<T, R, C> const &rhs)
+            \brief Scales matrix rhs by lhs.
+         */
+        template<typename T, size_t R, size_t C>
+        constexpr matrix_t<T, R, C> operator*(T const &lhs, matrix_t<T, R, C> const &rhs)
+        {
+            auto new_mat = rhs;
+
+            for( auto i = 0u; i < R; ++i )
+            {
+                for( auto j = 0u; j < C; ++j )
+                {
+                    new_mat[i][j] *= lhs;
+                }
+            }
+
+            return new_mat;
+        }
+
+        /** \fn constexpr matrix_t<T, R, C> operator*(matrix_t<T, R2, C2> const &lhs, T const &rhs)
+            \brief Scales matrix lhs by rhs.
+         */
+        template<typename T, size_t R, size_t C>
+        constexpr matrix_t<T, R, C> operator*(matrix_t<T, R, C> const &lhs, T const &rhs)
+        {
+            return rhs * lhs;
+        }
         
     } // namespace matrix_t
 } // namespace math_nerd
