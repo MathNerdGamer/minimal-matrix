@@ -9,24 +9,33 @@ Here's a basic example:
 #include <iostream>
 #include <iomanip>
 
-using namespace math_nerd::matrix_t;
+using namespace math_nerd::matrix_t; // For demonstration purposes
 
 template<typename T, std::size_t R, std::size_t C>
 std::ostream &operator<<(std::ostream &os, matrix_t<T, R, C> matrix);
 
 int main()
 {
-    matrix_t<double, 3, 7> A;
+    matrix_t<double, 4, 7> A;
+    matrix_t<double, 7, 6> B;
 
-    for( auto i = 0u; i < 3; ++i )
+    for( auto i = 0u; i < 4; ++i )
     {
         for( auto j = 0u; j < 7; ++j )
         {
-            A[i][j] = 2.71828*i + 3.14159*j;
+            A[i][j] = 2.71828*i + j;
         }
     }
 
-    std::cout << A << '\n';
+    for( auto i = 0u; i < 7; ++i )
+    {
+        for( auto j = 0u; j < 6; ++j )
+        {
+            B[i][j] = i + 3.14159*j;
+        }
+    }
+
+    std::cout << A * B << '\n';
 
     return 0;
 }
@@ -45,11 +54,13 @@ std::ostream &operator<<(std::ostream &os, matrix_t<T, R, C> matrix)
 
     return os;
 }
+
 ```
 
 Output:
 ```
-         0    3.14159    6.28318    9.42477    12.5664     15.708    18.8495
-   2.71828    5.85987    9.00146     12.143    15.2846    18.4262    21.5678
-   5.43656    8.57815    11.7197    14.8613    18.0029    21.1445    24.2861
+        91    156.973    222.947     288.92    354.894    420.867
+   148.084    273.835    399.587    525.338     651.09    776.841
+   205.168    390.697    576.227    761.756    947.286    1132.82
+   262.252    507.559    752.867    998.174    1243.48    1488.79
 ```
