@@ -65,6 +65,22 @@ namespace math_nerd
                     return mat[pos];
                 }
 
+                /** \fn size_t row_count() const noexcept
+                    \brief Returns the number of rows.
+                 */
+                size_t row_count() const noexcept
+                {
+                    return R;
+                }
+
+                /** \fn size_t column_count() const noexcept
+                    \brief Returns the number of columns.
+                 */
+                size_t column_count() const noexcept
+                {
+                    return C;
+                }
+
                 /** \name Unary operators */
                 /** \fn matrix_t<T, R, C> operator+() const noexcept
                     \brief Returns the matrix as-is.
@@ -300,4 +316,3 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
-
