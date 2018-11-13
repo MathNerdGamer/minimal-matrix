@@ -35,9 +35,18 @@ int main()
         }
     }
 
-    std::cout << A * B << '\n';
+    try
+    {
+        std::cout << A * B << '\n';
+    }
+    catch( std::invalid_argument const &e )
+    {
+        std::cout << e.what();
+        return EXIT_FAILURE;
+    }
+    
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 template<typename T, std::size_t R, std::size_t C>
