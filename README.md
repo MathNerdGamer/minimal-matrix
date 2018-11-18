@@ -1,6 +1,6 @@
 # Minimal Matrix
 
-A header-only minimal matrix implementation which accepts user-defined numerical types. Includes unary +/-, addition, subtraction, multiplication assignment/binary operators, and comparison operators.
+A header-only minimal matrix implementation which accepts user-defined numerical types. Includes unary +/-, addition, subtraction, multiplication assignment/binary operators, and comparison operators. This is minimal in the sense that only the most basic operations on a matrix are included.
 
 # Usage
 Here's a basic example:
