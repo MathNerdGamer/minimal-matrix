@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #pragma once
-#ifndef MATRIX_T_H
-#define MATRIX_T_H
+#ifndef MATH_NERD_MATRIX_T_H
+#define MATH_NERD_MATRIX_T_H
 #include <array>
 #include <cstdint>
 #include <sstream>
