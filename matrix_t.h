@@ -27,6 +27,7 @@ SOFTWARE.
 #include <array>
 #include <cstdint>
 #include <sstream>
+#include <iostream>
 
 /** \file matrix_t.h
     \brief Minimal matrix implemetation which takes user-defined numerical types.
@@ -149,7 +150,7 @@ namespace math_nerd
         {
             for( auto i = 0u; i < R; ++i )
             {
-                for( auto j = 0u; j < C; ++i )
+                for( auto j = 0u; j < C; ++j )
                 {
                     mat[i][j] = rhs[i][j];
                 }
@@ -163,7 +164,7 @@ namespace math_nerd
         {
             for( auto i = 0u; i < R; ++i )
             {
-                for( auto j = 0u; j < C; ++i )
+                for( auto j = 0u; j < C; ++j )
                 {
                     mat[i][j] += rhs[i][j];
                 }
@@ -177,7 +178,7 @@ namespace math_nerd
         {
             for( auto i = 0u; i < R; ++i )
             {
-                for( auto j = 0u; j < C; ++i )
+                for( auto j = 0u; j < C; ++j )
                 {
                     mat[i][j] -= rhs[i][j];
                 }
@@ -236,11 +237,11 @@ namespace math_nerd
             return lhs;
         }
 
-        /** \fn constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R2, C2> &lhs, matrix_t<T, R2, C2> const &rhs)
+        /** \fn constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R, C> cobst &lhs, matrix_t<T, R2, C2> const &rhs)
             \brief Multiples rhs to matrix, throws if dimensions aren't compatible. Returns a matrix of possibly different dimensions.
          */
         template<typename T, size_t R, size_t C, size_t R2, size_t C2>
-        constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R, C> &lhs, matrix_t<T, R2, C2> const &rhs)
+        constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R, C> const &lhs, matrix_t<T, R2, C2> const &rhs)
         {
             if( C != R2 )
             {
@@ -316,3 +317,4 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
+
