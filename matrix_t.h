@@ -237,7 +237,7 @@ namespace math_nerd
             return lhs;
         }
 
-        /** \fn constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R, C> cobst &lhs, matrix_t<T, R2, C2> const &rhs)
+        /** \fn constexpr matrix_t<T, R, C2> operator*(matrix_t<T, R, C> const &lhs, matrix_t<T, R2, C2> const &rhs)
             \brief Multiples rhs to matrix, throws if dimensions aren't compatible. Returns a matrix of possibly different dimensions.
          */
         template<typename T, size_t R, size_t C, size_t R2, size_t C2>
