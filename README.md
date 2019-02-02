@@ -11,25 +11,28 @@ Here's a basic example:
 
 using namespace math_nerd::matrix_t; // For demonstration purposes
 
-template<typename T, std::size_t R, std::size_t C>
-std::ostream &operator<<(std::ostream &os, matrix_t<T, R, C> matrix);
+template<typename T>
+std::ostream &operator<<(std::ostream &os, matrix_t<T> matrix);
 
 int main()
 {
-    matrix_t<double, 4, 7> A;
-    matrix_t<double, 7, 6> B;
+    std::int64_t A_rows{ 4 }, A_columns{ 7 };
+    std::int64_t B_rows{ 7 }, B_columns{ 6 };
 
-    for( auto i = 0u; i < 4; ++i )
+    matrix_t<double> A{ A_rows, A_columns };
+    matrix_t<double> B{ B_rows, B_columns };
+
+    for( auto i = 0u; i < A_rows; ++i )
     {
-        for( auto j = 0u; j < 7; ++j )
+        for( auto j = 0u; j < A_columns; ++j )
         {
             A[i][j] = 2.71828*i + j;
         }
     }
 
-    for( auto i = 0u; i < 7; ++i )
+    for( auto i = 0u; i < B_rows; ++i )
     {
-        for( auto j = 0u; j < 6; ++j )
+        for( auto j = 0u; j < B_columns; ++j )
         {
             B[i][j] = i + 3.14159*j;
         }
@@ -49,12 +52,12 @@ int main()
     return EXIT_SUCCESS;
 }
 
-template<typename T, std::size_t R, std::size_t C>
-std::ostream &operator<<(std::ostream &os, matrix_t<T, R, C> matrix)
+template<typename T>
+std::ostream &operator<<(std::ostream &os, matrix_t<T> matrix)
 {
-    for( auto i = 0u; i < R; ++i )
+    for( auto i = 0u; i < matrix.row_count(); ++i )
     {
-        for( auto j = 0u; j < C; ++j )
+        for( auto j = 0u; j < matrix.column_count(); ++j )
         {
             os << std::setw(10) << matrix[i][j] << ' ';
         }
