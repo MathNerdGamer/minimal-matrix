@@ -37,24 +37,24 @@ namespace math_nerd
 {
     namespace matrix_t
     {
-        using std::int64_t;
+        using s64 = std::int64_t;
 
         template<typename T>
         class matrix_t
         {
             private:
                 std::vector<std::vector<T>> mat;
-                int64_t r = 2, c = 2;
+                s64 r = 2, c = 2;
 
             public:
-                matrix_t(int64_t rows = 2, int64_t columns = 0)
+                matrix_t(s64 rows = 2, s64 columns = 0)
                 {
-                    if( rows < 2 )
+                    if( rows < 1 )
                     {
-                        rows = 2;
+                        rows = 1;
                     }
 
-                    if( columns < 2 )
+                    if( columns < 1 )
                     {
                         columns = rows;
                     }
@@ -92,21 +92,26 @@ namespace math_nerd
                     return mat[pos];
                 }
 
-                /** \fn int64_t row_count() const noexcept
+                /** \fn s64 row_count() const noexcept
                     \brief Returns the number of rows.
                  */
-                int64_t row_count() const noexcept
+                s64 row_count() const noexcept
                 {
                     return r;
                 }
 
-                /** \fn int64_t column_count() const noexcept
+                /** \fn s64 column_count() const noexcept
                     \brief Returns the number of columns.
                  */
-                int64_t column_count() const noexcept
+                s64 column_count() const noexcept
                 {
                     return c;
                 }
+
+                /** \fn matrix_t<T> inverse() const;
+                    \brief Returns the inverse matrix. Throws if not invertible. Defined by the user.
+                 */
+                matrix_t<T> inverse() const;
 
                 /** \name Unary operators */
                 /** \fn matrix_t<T> operator+() const noexcept
@@ -152,7 +157,7 @@ namespace math_nerd
         template<typename T>
         matrix_t<T> matrix_t<T>::operator-() const noexcept
         {
-            int64_t R = this->row_count, C = this->column_count();
+            s64 R = this->row_count, C = this->column_count();
             matrix_t<T> new_mat{ R, C };
 
             for( auto i = 0u; i < R; ++i )
@@ -298,8 +303,8 @@ namespace math_nerd
         template<typename T>
         constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs)
         {
-            int64_t R = lhs.row_count(), C = lhs.column_count();
-            int64_t R2 = rhs.row_count(), C2 = rhs.column_count();
+            s64 R = lhs.row_count(), C = lhs.column_count();
+            s64 R2 = rhs.row_count(), C2 = rhs.column_count();
 
             if( R2 != C )
             {
@@ -375,4 +380,3 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
-
