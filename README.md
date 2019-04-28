@@ -9,22 +9,21 @@ Here's a basic example:
 #include <iostream>
 #include <iomanip>
 
-using namespace math_nerd::matrix_t; // For demonstration purposes
+using namespace math_nerd::matrix_t;
 
 template<typename T>
 std::ostream &operator<<(std::ostream &os, matrix_t<T> matrix);
 
-int main()
+int main(int argc, char **argv)
 {
-    std::int64_t A_rows{ 4 }, A_columns{ 7 };
-    std::int64_t B_rows{ 7 }, B_columns{ 6 };
+    constexpr std::int64_t A_rows{ 7 }, A_cols{ 6 }, B_rows{ 6 }, B_cols{ 9 };
 
-    matrix_t<double> A{ A_rows, A_columns };
-    matrix_t<double> B{ B_rows, B_columns };
+    matrix_t<double> A{ A_rows, A_cols };
+    matrix_t<double> B{ B_rows, B_cols };
 
     for( auto i = 0u; i < A_rows; ++i )
     {
-        for( auto j = 0u; j < A_columns; ++j )
+        for( auto j = 0u; j < A_cols; ++j )
         {
             A[i][j] = 2.71828*i + j;
         }
@@ -32,28 +31,41 @@ int main()
 
     for( auto i = 0u; i < B_rows; ++i )
     {
-        for( auto j = 0u; j < B_columns; ++j )
+        for( auto j = 0u; j < B_cols; ++j )
         {
             B[i][j] = i + 3.14159*j;
         }
     }
 
+    std::array<double, B_cols> first_only;
+
+    first_only[0] = 1.0;
+
+    for( auto i = 1u; i < B_cols; ++i )
+    {
+        first_only[i] = 0.0;
+    }
+
     try
     {
-        std::cout << A * B << '\n';
-    }
-    catch( std::invalid_argument const &e )
-    {
-        std::cout << e.what();
-        return EXIT_FAILURE;
-    }
-    
+        auto C = A * B;
+        std::cout << C << '\n';
 
-    return EXIT_SUCCESS;
+        std::cout << '\n' << '\n';
+
+        auto D = C * first_only; // Vector with only first element of each row.
+        std::cout << D << '\n';
+    }
+    catch( std::invalid_argument &e )
+    {
+        std::cout << e.what() << '\n';
+    }
+
+    return 0;
 }
 
 template<typename T>
-std::ostream &operator<<(std::ostream &os, matrix_t<T> matrix)
+std::ostream &operator<<(std::ostream &os, matrix_t<T> const matrix)
 {
     for( auto i = 0u; i < matrix.row_count(); ++i )
     {
