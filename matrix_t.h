@@ -24,6 +24,7 @@ SOFTWARE.
 #pragma once
 #ifndef MATH_NERD_MATRIX_T_H
 #define MATH_NERD_MATRIX_T_H
+#include <array>
 #include <vector>
 #include <cstdint>
 #include <sstream>
@@ -341,6 +342,84 @@ namespace math_nerd
 
             return new_mat;
         }
+        
+        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs)
+            \brief Matrix-Vector multiplication with std::array.
+         */
+        template<typename T, std::size_t len>
+        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs)
+        {
+            s64 R = lhs.row_count(), C = lhs.column_count();
+            s64 R2 = len, C2 = 1;
+
+            if( R2 != C )
+            {
+                std::stringstream error_stream;
+
+                error_stream << "Cannot multiply matrices because the left-hand matrix has "
+                             << C << " columns, which does not equal the number of rows of the right-hand matrix, "
+                             << R2 << ".\n";
+
+                std::string error_text = error_stream.str();
+                throw std::invalid_argument(error_text);
+            }
+
+            matrix_t<T> new_mat{ R, C2 };
+
+            for( auto i = 0u; i < R; ++i )
+            {
+                new_mat[i][0] = 0;
+            }
+
+            for( auto i = 0u; i < R; ++i )
+            {
+                for( auto j = 0u; j < C; ++j )
+                {
+                    new_mat[i][0] += lhs[i][j] * rhs[j];
+                }
+            }
+
+            return new_mat;
+        }
+        
+        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs)
+            \brief Matrix-Vector multiplication with std::vector.
+         */
+        template<typename T>
+        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs)
+        {
+            s64 R = lhs.row_count(), C = lhs.column_count();
+            s64 R2 = rhs.size(), C2 = 1;
+
+            if( R2 != C )
+            {
+                std::stringstream error_stream;
+
+                error_stream << "Cannot multiply matrices because the left-hand matrix has "
+                             << C << " columns, which does not equal the number of rows of the right-hand matrix, "
+                             << R2 << ".\n";
+
+                std::string error_text = error_stream.str();
+                throw std::invalid_argument(error_text);
+            }
+
+            matrix_t<T> new_mat{ R, C2 };
+
+            for( auto i = 0u; i < R; ++i )
+            {
+                new_mat[i][0] = 0;
+            }
+
+            for( auto i = 0u; i < R; ++i )
+            {
+                for( auto j = 0u; j < C; ++j )
+                {
+                    new_mat[i][0] += lhs[i][j] * rhs[j];
+                }
+            }
+
+            return new_mat;
+        }
 
         // Scalar multiplication operator
         /** \name Scalar multiplication operators */
@@ -380,3 +459,4 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
+
