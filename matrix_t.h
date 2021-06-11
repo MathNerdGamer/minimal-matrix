@@ -25,30 +25,84 @@ SOFTWARE.
 #ifndef MATH_NERD_MATRIX_T_H
 #define MATH_NERD_MATRIX_T_H
 #include <array>
-#include <vector>
 #include <cstdint>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <type_traits>
+#include <vector>
 
 /** \file matrix_t.h
     \brief Minimal matrix implemetation which takes user-defined numerical types.
  */
 
+ /** \namespace math_nerd
+      \brief Namespace for all of my projects.
+   */
 namespace math_nerd
 {
+    /** \namespace math_nerd::matrix_t
+        \brief Namespace for matrix_t implementation.
+     */
     namespace matrix_t
     {
+        /** \namespace math_nerd::matrix_t::impl_details
+            \brief Contains implementation details.
+         */
+        namespace impl_details
+        {
+            /** \name Type Traits
+             */
+            // Modified from T.C.'s answer on Stack Overflow: https://stackoverflow.com/a/26434209
+            template<class...> struct voidify { using type = void; };
+            template<class... Ts> using void_t = typename voidify<Ts...>::type;
+
+            template<class T, class = void>
+            struct supports_arithmetic : std::false_type {};
+
+            template<class T>
+            struct supports_arithmetic<T,
+                void_t<decltype(std::declval<T>() + std::declval<T>()),
+                decltype(std::declval<T>() - std::declval<T>()),
+                decltype(std::declval<T>() *std::declval<T>()),
+                decltype(std::declval<T>() / std::declval<T>()),
+                decltype(std::declval<T>() % std::declval<T>())>>
+                : std::true_type {};
+
+            // Added to emulate std::is_arithmetic_v<T> syntax.
+            template<class T>
+            inline constexpr bool supports_arithmetic_v = supports_arithmetic<T>::value;
+        }
+        
+
+        /** \name Signed 64-bit integer
+         */
         using s64 = std::int64_t;
 
+        /** \class matrix_t<T>
+            \brief A very minimal matrix implementation.
+         */
         template<typename T>
         class matrix_t
         {
+            // Check for arithmetic support.
+            static_assert(impl_details::supports_arithmetic_v<T>, "Matrix requires a type which supports arithmetic operations (+, -, *, /, %).");
+
             private:
                 std::vector<std::vector<T>> mat;
-                s64 r = 2, c = 2;
+                s64 rows_{ 2 }, columns_{ 2 };
 
             public:
-                matrix_t(s64 rows = 2, s64 columns = 0)
+                matrix_t()
+                {
+                    std::vector<T> zero(2, 0);
+
+                    for( auto i = 0; i < 2; ++i )
+                    {
+                        mat.push_back(zero);
+                    }
+                }
+
+                matrix_t(s64 rows = 2, s64 columns = 2)
                 {
                     if( rows < 1 )
                     {
@@ -60,17 +114,12 @@ namespace math_nerd
                         columns = rows;
                     }
 
-                    r = rows;
-                    c = columns;
+                    rows_ = rows;
+                    columns_ = columns;
 
-                    std::vector<T> zero;
+                    std::vector<T> zero(static_cast<std::uint32_t>(columns_), 0);
 
-                    for( auto i = 0; i < c; ++i )
-                    {
-                        zero.push_back(0);
-                    }
-
-                    for( auto i = 0; i < r; ++i )
+                    for( auto i = 0; i < rows_; ++i )
                     {
                         mat.push_back(zero);
                     }
@@ -98,7 +147,7 @@ namespace math_nerd
                  */
                 s64 row_count() const noexcept
                 {
-                    return r;
+                    return rows_;
                 }
 
                 /** \fn s64 column_count() const noexcept
@@ -106,7 +155,7 @@ namespace math_nerd
                  */
                 s64 column_count() const noexcept
                 {
-                    return c;
+                    return columns_;
                 }
 
                 /** \fn matrix_t<T> inverse() const;
@@ -158,12 +207,11 @@ namespace math_nerd
         template<typename T>
         matrix_t<T> matrix_t<T>::operator-() const noexcept
         {
-            s64 R = this->row_count, C = this->column_count();
-            matrix_t<T> new_mat{ R, C };
+            matrix_t<T> new_mat{ rows_, columns_  };
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < rows_; ++i )
             {
-                for( auto j = 0u; j < C; ++j )
+                for( auto j = 0u; j < columns_; ++j )
                 {
                     new_mat[i][j] = -new_mat[i][j];
                 }
@@ -176,12 +224,12 @@ namespace math_nerd
         template<typename T>
         matrix_t<T> &matrix_t<T>::operator+=(matrix_t<T> const rhs)
         {
-            if( r != rhs.row_count() || c != rhs.column_count() )
+            if( rows_ != rhs.row_count() || columns_ != rhs.column_count() )
             {
                 std::stringstream error_stream;
 
                 error_stream << "Cannot add matrices which are not the same dimension.\n"
-                             << "Left-hand matrix dimensions: " << r << " x " << c << '\n'
+                             << "Left-hand matrix dimensions: " << rows_ << " x " << columns_ << '\n'
                              << "Right-hand matrix dimensions: "
                              << rhs.row_count() << " x " << rhs.column_count() << '\n';
 
@@ -189,9 +237,9 @@ namespace math_nerd
                 throw std::invalid_argument(error_text);
             }
 
-            for( auto i = 0u; i < this->row_count(); ++i )
+            for( auto i = 0u; i < rows_; ++i )
             {
-                for( auto j = 0u; j < this->column_count(); ++j )
+                for( auto j = 0u; j < columns_; ++j )
                 {
                     mat[i][j] += rhs[i][j];
                 }
@@ -203,12 +251,12 @@ namespace math_nerd
         template<typename T>
         matrix_t<T> &matrix_t<T>::operator-=(matrix_t<T> const rhs)
         {
-            if( r != rhs.row_count() || c != rhs.column_count() )
+            if( rows_ != rhs.row_count() || columns_ != rhs.column_count() )
             {
                 std::stringstream error_stream;
 
                 error_stream << "Cannot subtract matrices which are not the same dimension.\n"
-                             << "Left-hand matrix dimensions: " << r << " x " << c << '\n'
+                             << "Left-hand matrix dimensions: " << rows_ << " x " << columns_ << '\n'
                              << "Right-hand matrix dimensions: "
                              << rhs.row_count() << " x " << rhs.column_count() << '\n';
 
@@ -216,9 +264,9 @@ namespace math_nerd
                 throw std::invalid_argument(error_text);
             }
 
-            for( auto i = 0u; i < this->row_count(); ++i )
+            for( auto i = 0u; i < rows_; ++i )
             {
-                for( auto j = 0u; j < this->column_count(); ++j )
+                for( auto j = 0u; j < columns_; ++j )
                 {
                     mat[i][j] -= rhs[i][j];
                 }
@@ -233,15 +281,15 @@ namespace math_nerd
         {
             bool same = true;
 
-            if( r != rhs.row_count() || c != rhs.column_count() )
+            if( rows_ != rhs.row_count() || columns_ != rhs.column_count() )
             {
                 same = false;
             }
             else
             {
-                for( auto i = 0u; i < this->row_count(); ++i )
+                for( auto i = 0u; i < rows_; ++i )
                 {
-                    for( auto j = 0u; j < this->column_count(); ++j )
+                    for( auto j = 0u; j < columns_; ++j )
                     {
                         if( mat[i][j] != rhs[i][j] )
                         {
@@ -260,7 +308,6 @@ namespace math_nerd
             return !(*this == rhs);
         }
 
-        // Binary operators
         /** \name Binary operators */
         /** \fn matrix_t<T> &operator+(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept
             \brief Adds two matrices of the same dimension together.
@@ -304,36 +351,36 @@ namespace math_nerd
         template<typename T>
         constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs)
         {
-            s64 R = lhs.row_count(), C = lhs.column_count();
-            s64 R2 = rhs.row_count(), C2 = rhs.column_count();
+            s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
+            s64 right_rows = rhs.row_count(), right_columns = rhs.column_count();
 
-            if( R2 != C )
+            if( right_rows != left_columns )
             {
                 std::stringstream error_stream;
 
                 error_stream << "Cannot multiply matrices because the left-hand matrix has "
-                             << C << " columns, which does not equal the number of rows of the right-hand matrix, "
-                             << R2 << ".\n";
+                             << left_columns << " columns, which does not equal the number of rows of the right-hand matrix, "
+                             << right_rows << ".\n";
 
                 std::string error_text = error_stream.str();
                 throw std::invalid_argument(error_text);
             }
 
-            matrix_t<T> new_mat{ R, C2 };
+            matrix_t<T> new_mat{ left_rows, right_columns };
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
-                for( auto j = 0u; j < C2; ++j )
+                for( auto j = 0u; j < right_columns; ++j )
                 {
                     new_mat[i][j] = 0;
                 }
             }
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
-                for( auto j = 0u; j < C2; ++j )
+                for( auto j = 0u; j < right_columns; ++j )
                 {
-                    for( auto k = 0u; k < C; ++k )
+                    for( auto k = 0u; k < left_columns; ++k )
                     {
                         new_mat[i][j] += lhs[i][k] * rhs[k][j];
                     }
@@ -349,31 +396,31 @@ namespace math_nerd
         template<typename T, std::size_t len>
         constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs)
         {
-            s64 R = lhs.row_count(), C = lhs.column_count();
-            s64 R2 = len, C2 = 1;
+            s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
+            s64 right_rows = len, right_columns = 1;
 
-            if( R2 != C )
+            if( right_rows != left_columns )
             {
                 std::stringstream error_stream;
 
                 error_stream << "Cannot multiply matrices because the left-hand matrix has "
-                             << C << " columns, which does not equal the number of rows of the right-hand matrix, "
-                             << R2 << ".\n";
+                             << left_columns << " columns, which does not equal the number of rows of the right-hand matrix, "
+                             << right_rows << ".\n";
 
                 std::string error_text = error_stream.str();
                 throw std::invalid_argument(error_text);
             }
 
-            matrix_t<T> new_mat{ R, C2 };
+            matrix_t<T> new_mat{ left_rows, right_columns };
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
                 new_mat[i][0] = 0;
             }
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
-                for( auto j = 0u; j < C; ++j )
+                for( auto j = 0u; j < left_columns; ++j )
                 {
                     new_mat[i][0] += lhs[i][j] * rhs[j];
                 }
@@ -388,31 +435,31 @@ namespace math_nerd
         template<typename T>
         constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs)
         {
-            s64 R = lhs.row_count(), C = lhs.column_count();
-            s64 R2 = rhs.size(), C2 = 1;
+            s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
+            s64 right_rows = rhs.size(), right_columns = 1;
 
-            if( R2 != C )
+            if( right_rows != left_columns )
             {
                 std::stringstream error_stream;
 
                 error_stream << "Cannot multiply matrices because the left-hand matrix has "
-                             << C << " columns, which does not equal the number of rows of the right-hand matrix, "
-                             << R2 << ".\n";
+                             << left_columns << " columns, which does not equal the number of rows of the right-hand matrix, "
+                             << right_rows << ".\n";
 
                 std::string error_text = error_stream.str();
                 throw std::invalid_argument(error_text);
             }
 
-            matrix_t<T> new_mat{ R, C2 };
+            matrix_t<T> new_mat{ left_rows, right_columns };
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
                 new_mat[i][0] = 0;
             }
 
-            for( auto i = 0u; i < R; ++i )
+            for( auto i = 0u; i < left_rows; ++i )
             {
-                for( auto j = 0u; j < C; ++j )
+                for( auto j = 0u; j < left_columns; ++j )
                 {
                     new_mat[i][0] += lhs[i][j] * rhs[j];
                 }
@@ -421,25 +468,22 @@ namespace math_nerd
             return new_mat;
         }
 
-        // Scalar multiplication operator
         /** \name Scalar multiplication operators */
         /** \fn constexpr matrix_t<T> operator*(T const &lhs, matrix_t<T> const &rhs)
             \brief Scales matrix rhs by lhs.
          */
         template<typename T>
-        constexpr matrix_t<T> operator*(T const &lhs, matrix_t<T> const &rhs)
+        constexpr matrix_t<T> operator*(T const &lhs, matrix_t<T> &rhs)
         {
-            auto new_mat = rhs;
-
             for( auto i = 0u; i < rhs.row_count(); ++i )
             {
                 for( auto j = 0u; j < rhs.column_count(); ++j )
                 {
-                    new_mat[i][j] *= lhs;
+                    rhs[i][j] *= lhs;
                 }
             }
 
-            return new_mat;
+            return rhs;
         }
 
         /** \fn constexpr matrix_t<T> operator*(matrix_t<T, R2, C2> const &lhs, T const &rhs)
@@ -459,4 +503,3 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
-
