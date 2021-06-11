@@ -141,6 +141,7 @@ namespace math_nerd
                     return mat[pos];
                 }
 
+                /** \name Row and Column Count */
                 /** \fn s64 row_count() const noexcept
                     \brief Returns the number of rows.
                  */
@@ -157,6 +158,7 @@ namespace math_nerd
                     return columns_;
                 }
 
+                /** \name Matrix Inverse */
                 /** \fn matrix_t<T> inverse() const;
                     \brief Returns the inverse matrix. Throws if not invertible. Defined by the user.
                  */
@@ -485,7 +487,7 @@ namespace math_nerd
             return rhs;
         }
 
-        /** \fn constexpr matrix_t<T> operator*(matrix_t<T, R2, C2> const &lhs, T const &rhs)
+        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, T const &rhs)
             \brief Scales matrix lhs by rhs.
          */
         template<typename T>
@@ -502,3 +504,4 @@ namespace math_nerd
     View the source code at <a href="https://gitlab.com/mathnerd/minimal-matrix">GitLab</a>.
  */
 #endif
+
