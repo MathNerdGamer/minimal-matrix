@@ -91,7 +91,7 @@ namespace math_nerd
                 s64 rows_{ 2 }, columns_{ 2 };
 
             public:
-                matrix_t()
+                constexpr matrix_t()
                 {
                     std::vector<T> zero(2, 0);
 
@@ -101,7 +101,7 @@ namespace math_nerd
                     }
                 }
 
-                matrix_t(s64 rows = 2, s64 columns = 2)
+                constexpr matrix_t(s64 rows = 2, s64 columns = 2)
                 {
                     if( rows < 1 )
                     {
@@ -125,88 +125,88 @@ namespace math_nerd
                 }
 
                 /** \name Array operators */
-                /** \fn std::vector<T> &operator[](std::size_t pos)
+                /** \fn auto operator[](std::size_t pos) -> std::vector<T> &
                     \brief Returns a reference to the column array at the specified position.
                  */
-                std::vector<T> &operator[](std::size_t pos)
+                constexpr auto operator[](std::size_t pos) -> std::vector<T> &
                 {
                     return mat[pos];
                 }
 
-                /** \fn std::vector<T> operator[](std::size_t pos) const
+                /** \fn auto operator[](std::size_t pos) const -> std::vector<T>
                     \brief Returns a copy to the column array at the specified position.
                  */
-                std::vector<T> operator[](std::size_t pos) const
+                constexpr auto operator[](std::size_t pos) const -> std::vector<T>
                 {
                     return mat[pos];
                 }
 
                 /** \name Row and Column Count */
-                /** \fn s64 row_count() const noexcept
+                /** \fn auto row_count() const noexcept -> s64
                     \brief Returns the number of rows.
                  */
-                s64 row_count() const noexcept
+                constexpr auto row_count() const noexcept -> s64
                 {
                     return rows_;
                 }
 
-                /** \fn s64 column_count() const noexcept
+                /** \fn auto column_count() const noexcept -> s64
                     \brief Returns the number of columns.
                  */
-                s64 column_count() const noexcept
+                constexpr auto column_count() const noexcept -> s64
                 {
                     return columns_;
                 }
 
                 /** \name Matrix Inverse */
-                /** \fn matrix_t<T> inverse() const;
+                /** \fn auto inverse() const -> matrix_t<T>
                     \brief Returns the inverse matrix. Throws if not invertible. Defined by the user.
                  */
-                matrix_t<T> inverse() const;
+                auto inverse() const -> matrix_t<T>;
 
                 /** \name Unary operators */
-                /** \fn matrix_t<T> operator+() const noexcept
+                /** \fn constexpr auto operator+() const noexcept -> matrix_t<T>
                     \brief Returns the matrix as-is.
                  */
-                matrix_t<T> operator+() const noexcept;
+                constexpr auto operator+() const noexcept -> matrix_t<T>;
 
-                /** \fn matrix_t<T> operator-() const noexcept
+                /** \fn constexpr auto operator-() const noexcept -> matrix_t<T>
                     \brief Returns the matrix with the signs of all elements flipped.
                  */
-                matrix_t<T> operator-() const noexcept;
+                constexpr auto operator-() const noexcept -> matrix_t<T>;
 
                 /** \name Assignment operators */
-                /** \fn matrix_t<T> &operator+=(matrix_t<T> const &rhs)
+                /** \fn constexpr auto operator+=(matrix_t<T> const &rhs) -> matrix_t<T> &
                     \brief Adds rhs to the matrix.
                  */
-                matrix_t<T> &operator+=(matrix_t<T> const rhs);
+                constexpr auto operator+=(matrix_t<T> const rhs) -> matrix_t<T> &;
 
-                /** \fn matrix_t<T> &operator-=(matrix_t<T> const &rhs)
+                /** \fn constexpr auto operator-=(matrix_t<T> const &rhs) -> matrix_t<T> &
                     \brief Subtracts rhs from the matrix.
                  */
-                matrix_t<T> &operator-=(matrix_t<T> const rhs);
+                constexpr auto operator-=(matrix_t<T> const rhs) -> matrix_t<T> &;
 
                 /** \name Comparison operators */
-                /** \fn constexpr bool operator==(matrix_t<T> const rhs) const noexcept
+                /** \fn constexpr auto operator==(matrix_t<T> const rhs) const noexcept -> bool
                     \brief Compares the values and returns true if they are all equal.
                  */
-                constexpr bool operator==(matrix_t<T> const &rhs) const noexcept;
+                constexpr auto operator==(matrix_t<T> const &rhs) const noexcept -> bool;
 
-                /** \fn constexpr bool operator!=(matrix_t<T> const rhs) const noexcept
+                /** \fn constexpr auto operator!=(matrix_t<T> const rhs) const noexcept -> bool
                     \brief Compares the values and returns false if they are all equal.
                  */
-                constexpr bool operator!=(matrix_t<T> const &rhs) const noexcept;
+                constexpr auto operator!=(matrix_t<T> const &rhs) const noexcept -> bool;
         };
 
         // Unary operators
         template<typename T>
-        matrix_t<T> matrix_t<T>::operator+() const noexcept
+        constexpr auto matrix_t<T>::operator+() const noexcept -> matrix_t<T>
         {
             return *this;
         }
 
         template<typename T>
-        matrix_t<T> matrix_t<T>::operator-() const noexcept
+        constexpr auto matrix_t<T>::operator-() const noexcept -> matrix_t<T>
         {
             matrix_t<T> new_mat{ rows_, columns_  };
 
@@ -223,7 +223,7 @@ namespace math_nerd
 
         // Assignment operators
         template<typename T>
-        matrix_t<T> &matrix_t<T>::operator+=(matrix_t<T> const rhs)
+        constexpr auto matrix_t<T>::operator+=(matrix_t<T> const rhs) -> matrix_t<T> &
         {
             if( rows_ != rhs.row_count() || columns_ != rhs.column_count() )
             {
@@ -250,7 +250,7 @@ namespace math_nerd
         }
 
         template<typename T>
-        matrix_t<T> &matrix_t<T>::operator-=(matrix_t<T> const rhs)
+        constexpr auto matrix_t<T>::operator-=(matrix_t<T> const rhs) -> matrix_t<T> &
         {
             if( rows_ != rhs.row_count() || columns_ != rhs.column_count() )
             {
@@ -278,7 +278,7 @@ namespace math_nerd
 
         // Comparison operators
         template<typename T>
-        constexpr bool matrix_t<T>::operator==(matrix_t<T> const &rhs) const noexcept
+        constexpr auto matrix_t<T>::operator==(matrix_t<T> const &rhs) const noexcept -> bool
         {
             bool same = true;
 
@@ -304,17 +304,17 @@ namespace math_nerd
         }
 
         template<typename T>
-        constexpr bool matrix_t<T>::operator!=(matrix_t<T> const &rhs) const noexcept
+        constexpr auto matrix_t<T>::operator!=(matrix_t<T> const &rhs) const noexcept -> bool
         {
             return !(*this == rhs);
         }
 
         /** \name Binary operators */
-        /** \fn matrix_t<T> &operator+(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept
+        /** \fn auto operator+(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept -> matrix_t<T> &
             \brief Adds two matrices of the same dimension together.
          */
         template<typename T>
-        matrix_t<T> operator+(matrix_t<T> lhs, matrix_t<T> const &rhs)
+        constexpr auto operator+(matrix_t<T> lhs, matrix_t<T> const &rhs) -> matrix_t<T>
         {
             try
             {
@@ -328,11 +328,11 @@ namespace math_nerd
             return lhs;
         }
 
-        /** \fn matrix_t<T> &operator-(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept
+        /** \fn auto operator-(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept -> matrix_t<T> &
             \brief Subtracts one matrix from another of the same dimension.
          */
         template<typename T>
-        matrix_t<T> &operator-(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept
+        constexpr auto operator-(matrix_t<T> lhs, matrix_t<T> const &rhs) noexcept -> matrix_t<T> &
         {
             try
             {
@@ -346,11 +346,11 @@ namespace math_nerd
             return lhs;
         }
 
-        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs)
+        /** \fn constexpr auto operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs) -> matrix_t<T>
             \brief Multiples rhs to matrix, throws if dimensions aren't compatible. Returns a matrix of possibly different dimensions.
          */
         template<typename T>
-        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs)
+        constexpr auto operator*(matrix_t<T> const &lhs, matrix_t<T> const &rhs) -> matrix_t<T>
         {
             s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
             s64 right_rows = rhs.row_count(), right_columns = rhs.column_count();
@@ -391,11 +391,11 @@ namespace math_nerd
             return new_mat;
         }
         
-        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs)
+        /** \fn constexpr auto operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs) -> matrix_t<T>
             \brief Matrix-Vector multiplication with std::array.
          */
         template<typename T, std::size_t len>
-        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs)
+        constexpr auto operator*(matrix_t<T> const &lhs, std::array<T, len> const &rhs) -> matrix_t<T>
         {
             s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
             s64 right_rows = len, right_columns = 1;
@@ -430,11 +430,11 @@ namespace math_nerd
             return new_mat;
         }
         
-        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs)
+        /** \fn constexpr auto operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs) -> matrix_t<T>
             \brief Matrix-Vector multiplication with std::vector.
          */
         template<typename T>
-        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs)
+        constexpr auto operator*(matrix_t<T> const &lhs, std::vector<T> const &rhs) -> matrix_t<T>
         {
             s64 left_rows = lhs.row_count(), left_columns = lhs.column_count();
             s64 right_rows = rhs.size(), right_columns = 1;
@@ -470,11 +470,11 @@ namespace math_nerd
         }
 
         /** \name Scalar multiplication operators */
-        /** \fn constexpr matrix_t<T> operator*(T const &lhs, matrix_t<T> const &rhs)
+        /** \fn constexpr auto operator*(T const &lhs, matrix_t<T> const &rhs) -> matrix_t<T>
             \brief Scales matrix rhs by lhs.
          */
         template<typename T>
-        constexpr matrix_t<T> operator*(T const &lhs, matrix_t<T> &rhs)
+        constexpr auto operator*(T const &lhs, matrix_t<T> &rhs) -> matrix_t<T>
         {
             for( auto i = 0u; i < rhs.row_count(); ++i )
             {
@@ -487,11 +487,11 @@ namespace math_nerd
             return rhs;
         }
 
-        /** \fn constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, T const &rhs)
+        /** \fn constexpr auto operator*(matrix_t<T> const &lhs, T const &rhs) -> matrix_t<T>
             \brief Scales matrix lhs by rhs.
          */
         template<typename T>
-        constexpr matrix_t<T> operator*(matrix_t<T> const &lhs, T const &rhs)
+        constexpr auto operator*(matrix_t<T> const &lhs, T const &rhs) -> matrix_t<T>
         {
             return rhs * lhs;
         }
