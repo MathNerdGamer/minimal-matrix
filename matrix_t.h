@@ -64,8 +64,7 @@ namespace math_nerd
                 void_t<decltype(std::declval<T>() + std::declval<T>()),
                 decltype(std::declval<T>() - std::declval<T>()),
                 decltype(std::declval<T>() *std::declval<T>()),
-                decltype(std::declval<T>() / std::declval<T>()),
-                decltype(std::declval<T>() % std::declval<T>())>>
+                decltype(std::declval<T>() / std::declval<T>())>>
                 : std::true_type {};
 
             // Added to emulate std::is_arithmetic_v<T> syntax.
@@ -85,7 +84,7 @@ namespace math_nerd
         class matrix_t
         {
             // Check for arithmetic support.
-            static_assert(impl_details::supports_arithmetic_v<T>, "Matrix requires a type which supports arithmetic operations (+, -, *, /, %).");
+            static_assert(impl_details::supports_arithmetic_v<T>, "Matrix requires a type which supports arithmetic operations (+, -, *, /).");
 
             private:
                 std::vector<std::vector<T>> mat;
