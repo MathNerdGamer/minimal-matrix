@@ -665,7 +665,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rows_; ++i )
@@ -691,7 +691,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rows_; ++i )
@@ -715,7 +715,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rows_; ++i )
@@ -739,7 +739,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rows_; ++i )
@@ -764,7 +764,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rows_ && res; ++i )
@@ -821,7 +821,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < left_rows; ++i )
@@ -846,7 +846,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < left_rows; ++i )
@@ -868,7 +868,7 @@ namespace math_nerd
                     #if MATH_NERD_OMP_THREADCOUNT > 0
                         #pragma omp parallel for num_threads(MATH_NERD_OMP_THREADCOUNT)
                     #else
-                        #pragma omp parallel
+                        #pragma omp parallel for
                     #endif
                 #endif
                 for( auto i = 0; i < rhs.row_count(); ++i )
